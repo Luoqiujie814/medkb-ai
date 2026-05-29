@@ -1,0 +1,112 @@
+# ============================================================
+# MedKB-AI 实体抽取提示词模板
+# 策略1: Few-shot (3示例)
+# ============================================================
+
+# --- Few-shot 实体抽取 ---
+few_shot_entity:
+system: |
+  你是一位资深的医药信息学专家，擅长从医药文本中精确抽取结构化实体信息。
+
+  抽取实体类型：
+  - drug: 药品名称（通用名/商品名）
+  - disease: 疾病/症状名称
+  - adverse_effect: 不良反应/副作用
+  - contraindication: 禁忌症
+
+user: |
+  请从以下医药文本中抽取所有医疗实体。
+
+  示例1:
+  文本: "布洛芬可用于缓解轻度至中度疼痛，常见不良反应为胃肠道不适。"
+  输出: {
+    "drugs": [{"name": "布洛芬", "category": "解热镇痛抗炎药"}],
+    "diseases": [{"name": "疼痛", "category": "症状"}],
+    "adverse_effects": [{"name": "胃肠道不适", "body_system": "消化系统"}]
+  }
+
+  示例2:
+  文本: "二甲双胍是2型糖尿病的一线治疗药物，肾功能不全者禁用。"
+  输出: {
+    "drugs": [{"name": "二甲双胍", "category": "口服降糖药"}],
+    "diseases": [{"name": "2型糖尿病", "category": "内分泌代谢疾病"}],
+    "contraindications": [{"condition": "肾功能不全"}]
+  }
+
+  示例3:
+  文本: "阿司匹林小剂量用于冠心病二级预防，与华法林合用增加出血风险。"
+  输出: {
+    "drugs": [{"name": "阿司匹林", "category": "抗血小板药"}, {"name": "华法林", "category": "抗凝药"}],
+    "diseases": [{"name": "冠心病", "category": "心血管疾病"}],
+    "adverse_effects": [{"name": "出血", "body_system": "血液系统"}]
+  }
+
+  现在请标注以下文本（严格按JSON格式输出）：
+  文本: {text}
+
+# --- Chain-of-Thought 实体抽取 ---
+cot_entity:
+system: |
+  你是一位医药信息学专家。请使用"逐步推理"方法从文本中抽取医疗实体。
+
+  思考步骤：
+  1. 先通读全文，理解文本主题（药品说明书/临床指南/研究文献?）
+  2. 逐句扫描，标记所有药品名称
+  3. 标记所有疾病和症状
+  4. 标记不良反应和禁忌症
+  5. 对每个实体进行标准化（药品用通用名，疾病用标准术语）
+  6. 最后按JSON格式汇总
+
+user: |
+  请按步骤推理并抽取以下文本中的医疗实体：
+
+  文本: {text}
+
+  请先写出你的推理过程，然后在最后用JSON格式输出结果。
+
+# --- 结构化JSON输出 实体抽取 ---
+structured_json_entity:
+system: |
+  你是一位医药知识工程专家。你必须严格按照指定的JSON Schema输出结果，不得添加任何额外字段或说明文字。
+
+  JSON Schema:
+  {
+    "drugs": [
+      {
+        "name": "string (必填，药品中文通用名)",
+        "english_name": "string (英文通用名，如已知)",
+        "category": "string (药品分类)",
+        "mention_in_text": "string (原文中的原文表述)",
+        "is_active_ingredient": "boolean (是否是有效成分)"
+      }
+    ],
+    "diseases": [
+      {
+        "name": "string (必填，疾病标准中文名)",
+        "english_name": "string (英文名称)",
+        "category": "string (疾病分类)",
+        "icd_code": "string (ICD编码，如已知)",
+        "is_symptom": "boolean (是否为症状而非明确诊断)"
+      }
+    ],
+    "adverse_effects": [
+      {
+        "name": "string (必填，不良反应名称)",
+        "body_system": "string (受累系统/器官)",
+        "frequency_in_text": "string (原文提及的发生率)",
+        "severity_in_text": "string (原文描述的严重程度)"
+      }
+    ],
+    "contraindications": [
+      {
+        "condition": "string (禁忌条件)",
+        "population": "string (禁忌人群)",
+        "is_absolute": "boolean (是否为绝对禁忌)"
+      }
+    ]
+  }
+
+user: |
+  请严格按照上述JSON Schema从以下文本中抽取实体（只输出JSON，不要任何其他文字）：
+
+  文本: {text}

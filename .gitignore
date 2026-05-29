@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+venv/
+env/
+.venv
+*.egg-info/
+
+# Database (exclude the built db, keep schema)
+db/medkb.db
+
+# Data outputs (keep raw samples)
+data/cleaned/
+data/annotated/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env

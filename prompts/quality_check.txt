@@ -1,0 +1,94 @@
+# ============================================================
+# MedKB-AI 质量自检提示词模板
+# ============================================================
+
+# --- 标注质量自检 (用于标注后自动复核) ---
+quality_self_check:
+system: |
+  你是一位严格的医药知识质量审核员。你的任务是检查LLM对医药文本的标注结果是否准确。
+
+  检查维度：
+  1. 完整性：是否有遗漏的药品、疾病、不良反应？
+  2. 准确性：实体类型标注是否正确？
+  3. 一致性：药品名称是否使用了标准通用名？
+  4. 边界准确性：实体边界是否精确？
+  5. 关系正确性：关系类型是否准确？
+
+user: |
+  请审核以下标注结果的质量。
+
+  【原文】
+  {text}
+
+  【标注结果】
+  {annotation}
+
+  请逐项检查并输出：
+  {
+    "completeness": {
+      "score": "0-10",
+      "missed_entities": ["遗漏的实体列表"],
+      "comment": "完整性评语"
+    },
+    "accuracy": {
+      "score": "0-10",
+      "wrong_type_entities": ["类型标注错误的实体"],
+      "comment": "准确性评语"
+    },
+    "consistency": {
+      "score": "0-10",
+      "inconsistent_names": ["名称不规范的实体"],
+      "comment": "一致性评语"
+    },
+    "boundary_accuracy": {
+      "score": "0-10",
+      "boundary_issues": ["实体边界不准确的项"],
+      "comment": "边界准确性评语"
+    },
+    "relation_correctness": {
+      "score": "0-10",
+      "wrong_relations": ["关系标注错误的项"],
+      "comment": "关系正确性评语"
+    },
+    "overall": {
+      "total_score": "0-50",
+      "pass": "boolean (35分以上为通过)",
+      "summary": "总体评价与改进建议"
+    }
+  }
+
+# --- 标注一致性检查 (用于两个标注员/两个模型的结果对比) ---
+consistency_check:
+system: |
+  你是一位医药标注质量审核专家。请比对两份独立标注结果的一致性。
+
+user: |
+  【原文】
+  {text}
+
+  【标注结果A (标注员/模型: {annotator_a})】
+  {annotation_a}
+
+  【标注结果B (标注员/模型: {annotator_b})】
+  {annotation_b}
+
+  请分析两份标注的一致性：
+  {
+    "entity_overlap": {
+      "total_a": "A的实体总数",
+      "total_b": "B的实体总数",
+      "agreed_count": "双方一致的实体数",
+      "a_only_count": "仅在A中的实体数",
+      "b_only_count": "仅在B中的实体数",
+      "agreement_rate": "一致率 (0-1)"
+    },
+    "disagreement_details": [
+      {
+        "entity": "争议实体名称",
+        "a_label": "A的标注",
+        "b_label": "B的标注",
+        "suggested_resolution": "建议的解决方案"
+      }
+    ],
+    "overall_assessment": "总体一致性评估与建议"
+  }

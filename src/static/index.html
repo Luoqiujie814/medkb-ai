@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedKB-AI — 医药知识治理平台</title>
+<style>
+/* ============================================================
+   CSS Variables & Reset
+   ============================================================ */
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #2c5f8a;
+  --accent: #3b82f6;
+  --accent-light: #eff6ff;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --success: #16a34a;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #0f172a;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,.1);
+  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--gray-50); color: var(--gray-900); line-height: 1.6; min-height: 100vh; }
+a { color: var(--accent); text-decoration: none; }
+
+/* ============================================================
+   Header & Nav
+   ============================================================ */
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, #1e4d7a 100%);
+  color: white;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 60px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  position: sticky; top: 0; z-index: 100;
+}
+.header .logo { font-size: 20px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; }
+.header .logo span { color: #60a5fa; }
+.nav { display: flex; gap: 4px; height: 100%; }
+.nav button {
+  background: none; border: none; color: rgba(255,255,255,.75);
+  padding: 0 18px; font-size: 14px; cursor: pointer;
+  font-family: var(--font); font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all .2s;
+}
+.nav button:hover { color: white; background: rgba(255,255,255,.08); }
+.nav button.active { color: white; border-bottom-color: #60a5fa; }
+
+/* ============================================================
+   Main Container
+   ============================================================ */
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+/* ============================================================
+   Cards
+   ============================================================ */
+.card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+  border: 1px solid var(--gray-200);
+}
+.card-title {
+  font-size: 17px; font-weight: 700; color: var(--primary);
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--gray-100);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ============================================================
+   Stats Grid
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 20px;
+  border-left: 4px solid var(--accent);
+  text-align: center;
+}
+.stat-card.warn { border-left-color: var(--warning); }
+.stat-card.danger { border-left-color: var(--danger); }
+.stat-card.success { border-left-color: var(--success); }
+.stat-card .number { font-size: 36px; font-weight: 800; color: var(--primary); line-height: 1.2; }
+.stat-card .label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+/* ============================================================
+   Search
+   ============================================================ */
+.search-box {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.search-box input {
+  flex: 1; padding: 12px 16px; border: 2px solid var(--gray-300);
+  border-radius: var(--radius); font-size: 15px; font-family: var(--font);
+  transition: border-color .2s;
+}
+.search-box input:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+.btn {
+  padding: 10px 20px; border: none; border-radius: var(--radius);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); transition: all .2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #2563eb; }
+.btn-outline { background: white; color: var(--accent); border: 2px solid var(--accent); }
+.btn-outline:hover { background: var(--accent-light); }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+.btn-danger { background: var(--danger); color: white; }
+
+/* ============================================================
+   Drug Detail
+   ============================================================ */
+.detail-header {
+  display: flex; justify-content: space-between; align-items: start;
+  flex-wrap: wrap; gap: 12px;
+}
+.detail-header h2 { color: var(--primary); font-size: 24px; }
+.detail-meta { color: var(--gray-500); font-size: 14px; }
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+}
+.badge-blue { background: var(--accent-light); color: var(--accent); }
+.badge-green { background: #dcfce7; color: var(--success); }
+.badge-yellow { background: #fef9c3; color: #a16207; }
+.badge-red { background: #fee2e2; color: var(--danger); }
+
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); margin-bottom: 16px; }
+.tab-btn {
+  background: none; border: none; padding: 10px 20px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); color: var(--gray-500);
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all .2s;
+}
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ============================================================
+   Tables
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: var(--gray-50); color: var(--gray-700); font-weight: 600;
+     padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--gray-200);
+     font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+tr:hover { background: var(--accent-light); }
+
+.severity-dot {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px;
+}
+.severity-dot.severe { background: var(--danger); }
+.severity-dot.moderate { background: var(--warning); }
+.severity-dot.mild { background: var(--success); }
+
+/* ============================================================
+   Interaction Checker
+   ============================================================ */
+.interaction-panel {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center;
+}
+.interaction-panel select, .interaction-panel input {
+  padding: 12px 16px; border: 2px solid var(--gray-300);
+  border-radius: var(--radius); font-size: 15px; font-family: var(--font);
+}
+.interaction-panel select:focus { outline: none; border-color: var(--accent); }
+.interaction-vs { font-size: 20px; font-weight: 800; color: var(--gray-400); text-align: center; }
+.interaction-result { margin-top: 20px; }
+.interaction-card {
+  padding: 20px; border-radius: var(--radius); text-align: center;
+}
+.interaction-card.safe { background: #dcfce7; border: 2px solid #86efac; }
+.interaction-card.danger { background: #fee2e2; border: 2px solid #fca5a5; }
+.interaction-card.warn { background: #fef9c3; border: 2px solid #fde047; }
+.interaction-card h3 { font-size: 20px; margin-bottom: 8px; }
+
+/* ============================================================
+   Knowledge Graph
+   ============================================================ */
+#graph-container {
+  width: 100%; height: 500px;
+  background: white; border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  position: relative; overflow: hidden;
+}
+#graph-container svg { width: 100%; height: 100%; }
+.graph-legend {
+  display: flex; gap: 16px; padding: 12px;
+  font-size: 13px; flex-wrap: wrap;
+}
+.graph-legend span { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+/* ============================================================
+   Search Results
+   ============================================================ */
+.result-list { list-style: none; }
+.result-list li {
+  padding: 12px 16px; border-bottom: 1px solid var(--gray-100);
+  cursor: pointer; transition: background .15s;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.result-list li:hover { background: var(--accent-light); }
+.result-list .name { font-weight: 600; color: var(--primary); }
+.result-list .cat { font-size: 13px; color: var(--gray-500); }
+
+/* ============================================================
+   Loading / Empty / Error
+   ============================================================ */
+.loading { text-align: center; padding: 40px; color: var(--gray-400); }
+.empty { text-align: center; padding: 40px; color: var(--gray-400); font-size: 15px; }
+.error { text-align: center; padding: 20px; color: var(--danger);
+         background: #fee2e2; border-radius: var(--radius); }
+
+/* ============================================================
+   Drug autocomplete dropdown
+   ============================================================ */
+.autocomplete-wrap { position: relative; flex: 1; }
+.autocomplete-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border: 2px solid var(--accent);
+  border-top: none; border-radius: 0 0 var(--radius) var(--radius);
+  max-height: 240px; overflow-y: auto; z-index: 50;
+  box-shadow: var(--shadow-lg); display: none;
+}
+.autocomplete-dropdown.show { display: block; }
+.autocomplete-dropdown div {
+  padding: 10px 16px; cursor: pointer; font-size: 14px;
+}
+.autocomplete-dropdown div:hover { background: var(--accent-light); }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .header { flex-direction: column; height: auto; padding: 12px; gap: 8px; }
+  .nav { flex-wrap: wrap; justify-content: center; }
+  .nav button { font-size: 12px; padding: 6px 12px; }
+  .interaction-panel { grid-template-columns: 1fr; }
+  .interaction-vs { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   Category Chart
+   ============================================================ */
+.category-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.category-bar .bar-label { width: 140px; font-size: 13px; text-align: right; color: var(--gray-700); }
+.category-bar .bar-track { flex: 1; height: 24px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.category-bar .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #60a5fa); border-radius: 4px; transition: width .5s; }
+.category-bar .bar-count { width: 40px; font-size: 13px; font-weight: 700; color: var(--primary); }
+
+/* Section visibility */
+.section { display: none; }
+.section.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     Header
+     ============================================================ -->
+<header class="header">
+  <div class="logo">MedKB-<span>AI</span> 医药知识治理平台</div>
+  <nav class="nav">
+    <button class="active" data-section="dashboard">📊 总览</button>
+    <button data-section="drugs">💊 药品查询</button>
+    <button data-section="diseases">🏥 疾病查询</button>
+    <button data-section="interactions">🔄 相互作用</button>
+    <button data-section="graph">🔗 知识图谱</button>
+    <button data-section="search">🔍 全文搜索</button>
+  </nav>
+</header>
+
+<!-- ============================================================
+     Main Content
+     ============================================================ -->
+<main class="container">
+
+  <!-- ========== Dashboard ========== -->
+  <section class="section active" id="section-dashboard">
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="number">—</div><div class="label">药品</div></div>
+      <div class="stat-card"><div class="number">—</div><div class="label">疾病</div></div>
+      <div class="stat-card"><div class="number">—</div><div class="label">适应症关系</div></div>
+      <div class="stat-card success"><div class="number">—</div><div class="label">不良反应记录</div></div>
+      <div class="stat-card danger"><div class="number">—</div><div class="label">药物相互作用</div></div>
+      <div class="stat-card warn"><div class="number">—</div><div class="label">严重不良反应</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📂 药品分类分布</div>
+      <div id="category-chart"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 质量概况</div>
+      <div id="quality-overview" style="font-size:14px;"></div>
+    </div>
+  </section>
+
+  <!-- ========== Drug Search ========== -->
+  <section class="section" id="section-drugs">
+    <div class="card">
+      <div class="card-title">💊 药品查询</div>
+      <div class="search-box">
+        <div class="autocomplete-wrap">
+          <input type="text" id="drug-search" placeholder="输入药品名称，如：阿司匹林、布洛芬..."
+                 autocomplete="off">
+          <div class="autocomplete-dropdown" id="drug-dropdown"></div>
+        </div>
+        <button class="btn btn-primary" onclick="searchDrug()">🔍 查询</button>
+        <button class="btn btn-outline btn-sm" onclick="loadDrugList()">📋 全部药品</button>
+      </div>
+      <div id="drug-list"></div>
+      <div id="drug-detail"></div>
+    </div>
+  </section>
+
+  <!-- ========== Disease Search ========== -->
+  <section class="section" id="section-diseases">
+    <div class="card">
+      <div class="card-title">🏥 疾病查询</div>
+      <div class="search-box">
+        <input type="text" id="disease-search" placeholder="输入疾病名称，如：冠心病、2型糖尿病..."
+               onkeydown="if(event.key==='Enter')searchDisease()">
+        <button class="btn btn-primary" onclick="searchDisease()">🔍 查询</button>
+      </div>
+      <div id="disease-result"></div>
+    </div>
+  </section>
+
+  <!-- ========== Interaction Checker ========== -->
+  <section class="section" id="section-interactions">
+    <div class="card">
+      <div class="card-title">🔄 药物相互作用检查</div>
+      <div class="interaction-panel">
+        <select id="inter-drug-a" onchange="checkInteraction()">
+          <option value="">— 选择药品A —</option>
+        </select>
+        <div class="interaction-vs">VS</div>
+        <select id="inter-drug-b" onchange="checkInteraction()">
+          <option value="">— 选择药品B —</option>
+        </select>
+      </div>
+      <div class="interaction-result" id="interaction-result"></div>
+    </div>
+  </section>
+
+  <!-- ========== Knowledge Graph ========== -->
+  <section class="section" id="section-graph">
+    <div class="card">
+      <div class="card-title">🔗 药品知识图谱
+        <span style="font-weight:400;font-size:13px;color:var(--gray-500);margin-left:8px;">
+          — 展示药品-疾病-不良反应-相互作用的关系网络
+        </span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="graph-drug" placeholder="输入药品名，查看其知识网络..."
+               onkeydown="if(event.key==='Enter')renderGraph()">
+        <button class="btn btn-primary" onclick="renderGraph()">🔗 展示图谱</button>
+      </div>
+      <div class="graph-legend">
+        <span><span class="legend-dot" style="background:#3b82f6"></span> 药品</span>
+        <span><span class="legend-dot" style="background:#16a34a"></span> 疾病</span>
+        <span><span class="legend-dot" style="background:#f59e0b"></span> 不良反应</span>
+        <span style="color:var(--gray-500)">拖拽节点 | 滚轮缩放 | 悬停看详情</span>
+      </div>
+      <div id="graph-container"></div>
+    </div>
+  </section>
+
+  <!-- ========== Fulltext Search ========== -->
+  <section class="section" id="section-search">
+    <div class="card">
+      <div class="card-title">🔍 全文搜索</div>
+      <div class="search-box">
+        <input type="text" id="fulltext-query" placeholder="输入关键词，如：肝毒性、出血、头痛..."
+               onkeydown="if(event.key==='Enter')fulltextSearch()">
+        <button class="btn btn-primary" onclick="fulltextSearch()">🔍 搜索</button>
+      </div>
+      <div id="fulltext-result"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     D3.js (CDN)
+     ============================================================ -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+// ============================================================
+// 全局状态
+// ============================================================
+const API = '/api';
+let allDrugs = [];
+let allDiseases = [];
+
+// ============================================================
+// 导航
+// ============================================================
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + btn.dataset.section).classList.add('active');
+    if (btn.dataset.section === 'dashboard') loadDashboard();
+    if (btn.dataset.section === 'drugs') loadDrugList();
+    if (btn.dataset.section === 'interactions') loadInteractionSelects();
+  });
+});
+
+// ============================================================
+// API 封装
+// ============================================================
+async function api(url) {
+  try {
+    const res = await fetch(API + url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+// ============================================================
+// Dashboard
+// ============================================================
+async function loadDashboard() {
+  const data = await api('/stats');
+  if (data.error) { document.getElementById('stats-grid').innerHTML = `<div class="error">${data.error}<br>请先运行: python src/kb_builder.py --from-structured</div>`; return; }
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="number">${data.drugs||0}</div><div class="label">药品</div></div>
+    <div class="stat-card"><div class="number">${data.diseases||0}</div><div class="label">疾病</div></div>
+    <div class="stat-card"><div class="number">${data.indications||0}</div><div class="label">适应症关系</div></div>
+    <div class="stat-card success"><div class="number">${data.adverse_effects||0}</div><div class="label">不良反应记录</div></div>
+    <div class="stat-card danger"><div class="number">${data.drug_interactions||0}</div><div class="label">药物相互作用</div></div>
+    <div class="stat-card warn"><div class="number">${data.severe_adverse_effects||0}</div><div class="label">严重不良反应</div></div>
+  `;
+
+  // 分类图
+  const cats = data.drug_categories || [];
+  const maxCount = Math.max(...cats.map(c => c.cnt), 1);
+  document.getElementById('category-chart').innerHTML = cats.map(c => `
+    <div class="category-bar">
+      <div class="bar-label">${c.category}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(c.cnt/maxCount*100)}%"></div></div>
+      <div class="bar-count">${c.cnt} 种</div>
+    </div>
+  `).join('') || '<div class="empty">暂无分类数据</div>';
+
+  // 质量概况
+  document.getElementById('quality-overview').innerHTML = `
+    <p>✅ 质检问题数: <strong>${data.quality_issues||0}</strong></p>
+    <p>📊 质量评分: <strong style="color:var(--success);font-size:24px;">${data.quality_score||'N/A'}</strong></p>
+  `;
+}
+
+// ============================================================
+// Drug Search
+// ============================================================
+async function loadDrugList() {
+  const data = await api('/drugs');
+  if (data.error) { document.getElementById('drug-list').innerHTML = `<div class="error">${data.error}</div>`; return; }
+  allDrugs = data.drugs || [];
+  renderDrugList(allDrugs);
+}
+
+function renderDrugList(drugs) {
+  const el = document.getElementById('drug-list');
+  if (!drugs.length) { el.innerHTML = '<div class="empty">未找到药品</div>'; return; }
+  el.innerHTML = `<ul class="result-list">${drugs.map(d => `
+    <li onclick="loadDrugDetail('${d.name}')">
+      <span><span class="name">${d.name}</span> <span class="cat">${d.generic_name||''}</span></span>
+      <span class="badge badge-blue">${d.category||''}</span>
+    </li>
+  `).join('')}</ul>`;
+}
+
+async function searchDrug() {
+  const q = document.getElementById('drug-search').value.trim();
+  if (!q) return loadDrugList();
+  const data = await api('/drugs/' + encodeURIComponent(q));
+  if (data.found) {
+    renderDrugDetail(data);
+    document.getElementById('drug-list').innerHTML = '';
+    document.getElementById('drug-search').value = data.name;
+  } else {
+    document.getElementById('drug-detail').innerHTML = `<div class="empty">未找到药品: ${q}</div>`;
+  }
+}
+
+async function loadDrugDetail(name) {
+  const data = await api('/drugs/' + encodeURIComponent(name));
+  if (data.found) renderDrugDetail(data);
+  document.getElementById('drug-list').innerHTML = '';
+  document.getElementById('drug-search').value = name;
+}
+
+function renderDrugDetail(d) {
+  const sevIcon = s => s === '重度' ? '🔴' : s === '中度' ? '🟡' : '🟢';
+  const sevClass = s => s === '重度' ? 'severe' : s === '中度' ? 'moderate' : 'mild';
+
+  document.getElementById('drug-detail').innerHTML = `
+    <div class="card" style="margin-top:16px;">
+      <div class="detail-header">
+        <div>
+          <h2>💊 ${d.name}</h2>
+          <div class="detail-meta">
+            通用名: ${d.generic_name||'—'} &nbsp;|&nbsp;
+            分类: ${d.category||'—'} &nbsp;|&nbsp;
+            剂型: ${d.dosage_form||'—'} &nbsp;|&nbsp;
+            企业: ${d.manufacturer||'—'}
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('section-graph').classList.add('active');document.querySelectorAll('.section').forEach(s=>s!==document.getElementById('section-graph')&&s.classList.remove('active'));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));document.querySelector('[data-section=graph]').classList.add('active');document.getElementById('graph-drug').value='${d.name}';renderGraph();">🔗 查看知识图谱</button>
+      </div>
+      ${d.description ? `<p style="color:var(--gray-500);margin-top:12px;">${d.description.slice(0,300)}...</p>` : ''}
+
+      <div class="tabs" style="margin-top:16px;">
+        <button class="tab-btn active" onclick="switchTab(event,'indications')">🎯 适应症 (${(d.indications||[]).length})</button>
+        <button class="tab-btn" onclick="switchTab(event,'effects')">⚠️ 不良反应 (${(d.adverse_effects||[]).length})</button>
+        <button class="tab-btn" onclick="switchTab(event,'interactions')">🔄 相互作用 (${(d.drug_interactions||[]).length})</button>
+      </div>
+
+      <div class="tab-content active" id="tab-indications">
+        ${(d.indications||[]).length ? `
+        <div class="table-wrap"><table>
+          <thead><tr><th>疾病</th><th>分类</th><th>证据等级</th><th>一线用药</th><th>用法</th></tr></thead>
+          <tbody>${d.indications.map(i => `
+            <tr>
+              <td><strong>${i.disease_name||''}</strong></td>
+              <td>${i.disease_category||''}</td>
+              <td><span class="badge ${i.evidence_level==='A'?'badge-green':'badge-yellow'}">${i.evidence_level||''}</span></td>
+              <td>${i.is_first_line ? '🏅 是' : '—'}</td>
+              <td style="font-size:13px;">${i.usage_note||''}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table></div>` : '<div class="empty">暂无适应症数据</div>'}
+      </div>
+
+      <div class="tab-content" id="tab-effects">
+        ${(d.adverse_effects||[]).length ? `
+        <div class="table-wrap"><table>
+          <thead><tr><th>不良反应</th><th>发生频率</th><th>严重程度</th><th>受累系统</th></tr></thead>
+          <tbody>${d.adverse_effects.map(ae => `
+            <tr>
+              <td><strong>${ae.effect_name||''}</strong></td>
+              <td>${ae.frequency||''}</td>
+              <td><span class="severity-dot ${sevClass(ae.severity)}"></span>${ae.severity||''}</td>
+              <td>${ae.body_system||''}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table></div>` : '<div class="empty">暂无不良反应数据</div>'}
+      </div>
+
+      <div class="tab-content" id="tab-interactions">
+        ${(d.drug_interactions||[]).length ? `
+        <div class="table-wrap"><table>
+          <thead><tr><th>相互作用药品</th><th>类型</th><th>机制</th><th>严重等级</th></tr></thead>
+          <tbody>${d.drug_interactions.map(ix => `
+            <tr>
+              <td><strong>${ix.drug_b_name||''}</strong></td>
+              <td>${ix.interaction_type||''}</td>
+              <td style="font-size:13px;">${ix.mechanism||''}</td>
+              <td><span class="badge ${ix.severity_level==='重度'?'badge-red':ix.severity_level==='中度'?'badge-yellow':'badge-green'}">${ix.severity_level||''}</span></td>
+            </tr>
+          `).join('')}</tbody>
+        </table></div>` : '<div class="empty">暂无相互作用数据</div>'}
+      </div>
+    </div>
+  `;
+}
+
+function switchTab(e, tabId) {
+  const card = e.target.closest('.card');
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  card.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  card.querySelector('#tab-' + tabId).classList.add('active');
+}
+
+// Drug autocomplete
+document.getElementById('drug-search').addEventListener('input', async function() {
+  const q = this.value.trim();
+  if (!q || q.length < 1) { document.getElementById('drug-dropdown').classList.remove('show'); return; }
+  if (!allDrugs.length) await loadDrugList();
+  const matches = allDrugs.filter(d => d.name.includes(q)).slice(0, 8);
+  const dd = document.getElementById('drug-dropdown');
+  if (!matches.length) { dd.classList.remove('show'); return; }
+  dd.innerHTML = matches.map(d => `<div onclick="loadDrugDetail('${d.name}');document.getElementById('drug-dropdown').classList.remove('show');">${d.name} <span style="color:var(--gray-400);font-size:12px;">${d.category||''}</span></div>`).join('');
+  dd.classList.add('show');
+});
+document.addEventListener('click', e => { if (!e.target.closest('.autocomplete-wrap')) document.getElementById('drug-dropdown').classList.remove('show'); });
+
+// ============================================================
+// Disease Search
+// ============================================================
+async function searchDisease() {
+  const q = document.getElementById('disease-search').value.trim();
+  if (!q) return;
+  const data = await api('/diseases/' + encodeURIComponent(q));
+  const el = document.getElementById('disease-result');
+  if (!data.found) { el.innerHTML = `<div class="empty">未找到疾病: ${q}</div>`; return; }
+
+  el.innerHTML = `
+    <div class="card" style="margin-top:16px;">
+      <h2>🏥 ${data.name}</h2>
+      <div class="detail-meta">分类: ${data.category||'—'} &nbsp;|&nbsp; ICD: ${data.icd_code||'—'}</div>
+      ${data.description ? `<p style="color:var(--gray-500);margin-top:12px;">${data.description.slice(0,300)}...</p>` : ''}
+      ${data.symptoms ? `<p style="margin-top:8px;"><strong>典型症状:</strong> ${data.symptoms}</p>` : ''}
+      ${(data.drugs||[]).length ? `
+        <h4 style="margin-top:16px;">💊 治疗药品 (${data.drugs.length} 种)</h4>
+        <div class="table-wrap"><table>
+          <thead><tr><th>药品</th><th>分类</th><th>证据等级</th><th>一线用药</th><th>用法</th></tr></thead>
+          <tbody>${data.drugs.map(dr => `
+            <tr>
+              <td><strong style="cursor:pointer;color:var(--accent);" onclick="document.getElementById('drug-search').value='${dr.drug_name||''}';document.querySelector('[data-section=drugs]').click();loadDrugDetail('${dr.drug_name||''}');">${dr.drug_name||''}</strong></td>
+              <td>${dr.category||''}</td>
+              <td><span class="badge ${dr.evidence_level==='A'?'badge-green':'badge-yellow'}">${dr.evidence_level||''}</span></td>
+              <td>${dr.is_first_line ? '🏅 是' : '—'}</td>
+              <td style="font-size:13px;">${dr.usage_note||''}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table></div>
+      ` : '<div class="empty">暂无治疗药品数据</div>'}
+    </div>
+  `;
+}
+
+// ============================================================
+// Interaction Checker
+// ============================================================
+async function loadInteractionSelects() {
+  if (!allDrugs.length) {
+    const data = await api('/drugs');
+    if (data.drugs) allDrugs = data.drugs;
+  }
+  const opts = allDrugs.map(d => `<option value="${d.name}">${d.name} (${d.category||''})</option>`).join('');
+  document.getElementById('inter-drug-a').innerHTML = '<option value="">— 选择药品A —</option>' + opts;
+  document.getElementById('inter-drug-b').innerHTML = '<option value="">— 选择药品B —</option>' + opts;
+}
+
+async function checkInteraction() {
+  const a = document.getElementById('inter-drug-a').value;
+  const b = document.getElementById('inter-drug-b').value;
+  const el = document.getElementById('interaction-result');
+  if (!a || !b) { el.innerHTML = ''; return; }
+
+  const data = await api('/interactions?drug_a=' + encodeURIComponent(a) + '&drug_b=' + encodeURIComponent(b));
+  if (data.error) { el.innerHTML = `<div class="error">${data.error}</div>`; return; }
+
+  if (data.has_interaction) {
+    const ix = data.interaction || {};
+    const sev = ix.severity_level || '';
+    const cardClass = sev === '重度' ? 'danger' : sev === '中度' ? 'warn' : 'safe';
+    const sevEmoji = sev === '重度' ? '🔴' : sev === '中度' ? '🟡' : '🟢';
+    el.innerHTML = `
+      <div class="interaction-card ${cardClass}">
+        <h3>⚠️ 存在相互作用</h3>
+        <p style="font-size:16px;margin:8px 0;"><strong>${data.drug_a}</strong> ↔ <strong>${data.drug_b}</strong></p>
+        <p>${sevEmoji} 严重等级: <strong>${sev||'未知'}</strong></p>
+        <p>类型: ${ix.interaction_type||'—'} &nbsp;|&nbsp; 机制: ${ix.mechanism||'—'}</p>
+        ${ix.clinical_action ? `<p style="margin-top:8px;">💡 临床建议: ${ix.clinical_action}</p>` : ''}
+      </div>
+    `;
+  } else if (data.found) {
+    el.innerHTML = `<div class="interaction-card safe"><h3>✅ 已知数据中未发现相互作用</h3><p>${data.drug_a} 与 ${data.drug_b} 在当前知识库中无已知相互作用记录</p></div>`;
+  }
+}
+
+// ============================================================
+// Knowledge Graph (D3.js Force-Directed)
+// ============================================================
+async function renderGraph() {
+  const drug = document.getElementById('graph-drug').value.trim();
+  if (!drug) return;
+
+  const container = document.getElementById('graph-container');
+  container.innerHTML = '<div class="loading">加载中...</div>';
+
+  const data = await api('/drugs/' + encodeURIComponent(drug) + '/graph');
+  if (data.error) { container.innerHTML = `<div class="error">${data.error}</div>`; return; }
+  if (!data.nodes || !data.nodes.length) { container.innerHTML = '<div class="empty">该药品无知识图谱数据</div>'; return; }
+
+  container.innerHTML = '';
+
+  const width = container.clientWidth;
+  const height = 500;
+
+  const colorMap = { drug: '#3b82f6', disease: '#16a34a', adverse_effect: '#f59e0b' };
+  const sizeMap = { drug: 22, disease: 16, adverse_effect: 14 };
+
+  const svg = d3.select('#graph-container')
+    .append('svg')
+    .attr('viewBox', [0, 0, width, height]);
+
+  // Zoom
+  const g = svg.append('g');
+  svg.call(d3.zoom().scaleExtent([0.3, 3]).on('zoom', (event) => { g.attr('transform', event.transform); }));
+
+  // Arrow marker
+  g.append('defs').append('marker')
+    .attr('id', 'arrow').attr('viewBox', '0 -5 10 10')
+    .attr('refX', 28).attr('refY', 0)
+    .attr('markerWidth', 8).attr('markerHeight', 8)
+    .attr('orient', 'auto')
+    .append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#94a3b8');
+
+  const simulation = d3.forceSimulation(data.nodes)
+    .force('link', d3.forceLink(data.links).id(d => d.id).distance(120))
+    .force('charge', d3.forceManyBody().strength(-400))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide(40));
+
+  // Links
+  const link = g.append('g').selectAll('line')
+    .data(data.links).join('line')
+    .attr('stroke', d => d.type === 'drug_interaction' ? '#ef4444' : d.type === 'adverse_effect' ? '#f59e0b' : '#3b82f6')
+    .attr('stroke-width', d => d.severity === '重度' ? 3 : d.severity === '中度' ? 2 : 1.2)
+    .attr('stroke-dasharray', d => d.type === 'drug_interaction' ? '6,3' : null)
+    .attr('marker-end', 'url(#arrow)')
+    .attr('opacity', 0.6);
+
+  // Link labels
+  const linkLabel = g.append('g').selectAll('text')
+    .data(data.links).join('text')
+    .text(d => d.label || '')
+    .attr('font-size', 10)
+    .attr('fill', '#64748b')
+    .attr('text-anchor', 'middle');
+
+  // Nodes
+  const node = g.append('g').selectAll('g')
+    .data(data.nodes).join('g')
+    .call(d3.drag()
+      .on('start', (event, d) => { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+      .on('end', (event, d) => { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+    );
+
+  node.append('circle')
+    .attr('r', d => sizeMap[d.type] || 12)
+    .attr('fill', d => colorMap[d.type] || '#94a3b8')
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
+
+  node.append('text')
+    .text(d => d.name.length > 10 ? d.name.slice(0, 10) + '...' : d.name)
+    .attr('x', 0).attr('y', d => (sizeMap[d.type]||12) + 14)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 11)
+    .attr('fill', '#334155');
+
+  // Tooltip
+  node.append('title')
+    .text(d => `${d.type === 'drug' ? '💊' : d.type === 'disease' ? '🏥' : '⚠️'} ${d.name}\n类型: ${d.type}\n${d.category||''} ${d.severity ? '严重度: '+d.severity : ''} ${d.body_system ? '系统: '+d.body_system : ''}`);
+
+  simulation.on('tick', () => {
+    link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+    linkLabel.attr('x', d => (d.source.x + d.target.x) / 2)
+             .attr('y', d => (d.source.y + d.target.y) / 2 - 6);
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+}
+
+// ============================================================
+// Fulltext Search
+// ============================================================
+async function fulltextSearch() {
+  const q = document.getElementById('fulltext-query').value.trim();
+  if (!q) return;
+  const data = await api('/search?q=' + encodeURIComponent(q));
+  const el = document.getElementById('fulltext-result');
+
+  const drugs = data.drugs || [];
+  const diseases = data.diseases || [];
+  const effects = data.adverse_effects || [];
+
+  el.innerHTML = `
+    <div class="card" style="margin-top:16px;">
+      <h3>🔍 搜索: "${q}" — 共 ${data.total||0} 条结果</h3>
+
+      ${drugs.length ? `
+        <h4 style="margin-top:16px;">💊 药品 (${drugs.length})</h4>
+        <ul class="result-list">${drugs.map(d => `
+          <li onclick="document.getElementById('drug-search').value='${d.name}';document.querySelector('[data-section=drugs]').click();loadDrugDetail('${d.name}');">
+            <span><span class="name">${d.name}</span> <span class="cat">${d.generic_name||''}</span></span>
+            <span class="badge badge-blue">${d.category||''}</span>
+          </li>
+        `).join('')}</ul>
+      ` : ''}
+
+      ${diseases.length ? `
+        <h4 style="margin-top:16px;">🏥 疾病 (${diseases.length})</h4>
+        <ul class="result-list">${diseases.map(d => `
+          <li onclick="document.getElementById('disease-search').value='${d.name}';document.querySelector('[data-section=diseases]').click();searchDisease();">
+            <span><span class="name">${d.name}</span></span>
+            <span class="badge badge-green">${d.category||''}</span>
+          </li>
+        `).join('')}</ul>
+      ` : ''}
+
+      ${effects.length ? `
+        <h4 style="margin-top:16px;">⚠️ 不良反应 (${effects.length})</h4>
+        <ul class="result-list">${effects.map(e => `
+          <li>
+            <span><span class="name">${e.effect_name||''}</span> — ${e.drug_name||''}</span>
+            <span><span class="severity-dot ${(e.severity||'')==='重度'?'severe':(e.severity||'')==='中度'?'moderate':'mild'}"></span>${e.severity||''}</span>
+          </li>
+        `).join('')}</ul>
+      ` : ''}
+
+      ${!data.total ? '<div class="empty">未找到相关结果</div>' : ''}
+    </div>
+  `;
+}
+
+// ============================================================
+// Init
+// ============================================================
+loadDashboard();
+</script>
+</body>
+</html>

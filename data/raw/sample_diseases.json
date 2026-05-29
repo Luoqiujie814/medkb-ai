@@ -1,0 +1,52 @@
+[
+  {
+    "name": "发热",
+    "english_name": "Fever",
+    "icd_code": "R50.9",
+    "category": "症状",
+    "description": "体温异常升高超过正常范围（通常>37.3℃），是机体对感染、炎症等病理状态的一种防御反应。",
+    "typical_symptoms": "体温升高, 畏寒, 寒战, 头痛, 全身酸痛",
+    "risk_factors": "感染, 炎症, 肿瘤, 中暑, 疫苗反应",
+    "common_drugs": ["阿司匹林", "布洛芬", "对乙酰氨基酚"]
+  },
+  {
+    "name": "冠心病",
+    "english_name": "Coronary Heart Disease",
+    "icd_code": "I25.1",
+    "category": "心血管疾病",
+    "description": "冠状动脉粥样硬化导致血管腔狭窄或阻塞，引起心肌缺血缺氧的心脏病，是最常见的心血管疾病之一。",
+    "typical_symptoms": "胸痛, 胸闷, 心悸, 气促, 乏力",
+    "risk_factors": "高血压, 高脂血症, 糖尿病, 吸烟, 肥胖, 家族史",
+    "common_drugs": ["阿司匹林", "他汀类药物", "硝酸甘油", "美托洛尔"]
+  },
+  {
+    "name": "2型糖尿病",
+    "english_name": "Type 2 Diabetes Mellitus",
+    "icd_code": "E11.9",
+    "category": "内分泌代谢疾病",
+    "description": "以胰岛素抵抗和胰岛素分泌相对不足为特征的慢性代谢性疾病，占所有糖尿病的90%以上。",
+    "typical_symptoms": "多饮, 多尿, 多食, 体重减轻, 乏力, 视物模糊",
+    "risk_factors": "肥胖, 缺乏运动, 不良饮食习惯, 家族史, 年龄>40岁",
+    "common_drugs": ["二甲双胍", "格列美脲", "胰岛素", "达格列净"]
+  },
+  {
+    "name": "高血压",
+    "english_name": "Hypertension",
+    "icd_code": "I10",
+    "category": "心血管疾病",
+    "description": "以体循环动脉血压持续升高为主要特征的慢性疾病，是心脑血管疾病最主要的危险因素。",
+    "typical_symptoms": "头痛, 头晕, 心悸, 耳鸣, 视物模糊",
+    "risk_factors": "高盐饮食, 肥胖, 缺乏运动, 吸烟, 饮酒, 精神压力, 家族史",
+    "common_drugs": ["氨氯地平", "硝苯地平", "氯沙坦", "贝那普利", "美托洛尔"]
+  },
+  {
+    "name": "胃食管反流病",
+    "english_name": "Gastroesophageal Reflux Disease (GERD)",
+    "icd_code": "K21.9",
+    "category": "消化系统疾病",
+    "description": "胃内容物反流入食管引起不适症状和/或并发症的疾病，典型表现为烧心和反流。",
+    "typical_symptoms": "烧心, 反酸, 胸骨后疼痛, 吞咽困难, 慢性咳嗽",
+    "risk_factors": "肥胖, 吸烟, 饮酒, 高脂饮食, 食管裂孔疝, 妊娠",
+    "common_drugs": ["奥美拉唑", "兰索拉唑", "莫沙必利", "铝碳酸镁"]
+  }
+]

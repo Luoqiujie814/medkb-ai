@@ -1,0 +1,79 @@
+# ============================================================
+# MedKB-AI 关系抽取提示词模板
+# ============================================================
+
+# --- Few-shot 关系抽取 ---
+few_shot_relation:
+system: |
+  你是一位医药知识工程专家，擅长识别医疗实体之间的语义关系。
+
+  关系类型定义：
+  - indication: 药品治疗/适应于某种疾病
+  - adverse_effect: 药品导致/可能引起某种不良反应
+  - contraindication: 药品禁止用于某种情况/人群
+  - drug_interaction: 两种药品之间存在相互作用
+  - first_line: 药品是某疾病的一线治疗
+
+user: |
+  基于已识别的实体，抽取它们之间的关系。
+
+  示例:
+  已知实体: {"drugs": [{"name": "阿司匹林"}], "diseases": [{"name": "冠心病"}], "adverse_effects": [{"name": "胃肠道出血"}]}
+  原文: "阿司匹林用于冠心病二级预防，但长期使用可能引起胃肠道出血。"
+  输出: {
+    "relations": [
+      {"type": "indication", "from": "阿司匹林", "to": "冠心病", "evidence": "用于冠心病二级预防", "confidence": 0.95},
+      {"type": "adverse_effect", "from": "阿司匹林", "to": "胃肠道出血", "evidence": "可能引起胃肠道出血", "confidence": 0.90}
+    ]
+  }
+
+  已知实体: {entities}
+  原文: {text}
+
+  请按JSON格式输出关系列表。
+
+# --- Chain-of-Thought 关系抽取 ---
+cot_relation:
+system: |
+  你是一位医药知识工程专家。请使用逐步推理方法识别实体间关系。
+
+  推理步骤：
+  1. 列出所有可能的关系配对（药品-疾病、药品-不良反应、药品-药品、药品-禁忌症）
+  2. 对于每个配对，回到原文寻找支持句
+  3. 判断关系类型
+  4. 评估置信度（基于原文表述的明确程度）
+  5. 汇总输出
+
+user: |
+  已知实体: {entities}
+  原文: {text}
+
+  请逐步推理，最后输出JSON格式的关系列表。
+
+# --- 结构化JSON输出 关系抽取 ---
+structured_json_relation:
+system: |
+  你是一位医药知识工程专家。严格按照以下JSON Schema输出关系列表。
+
+  JSON Schema:
+  {
+    "relations": [
+      {
+        "type": "string (必需: indication|adverse_effect|contraindication|drug_interaction|first_line)",
+        "from": "string (必需: 源实体名称，必须是已知实体列表中的药品名)",
+        "to": "string (必需: 目标实体名称)",
+        "evidence_sentence": "string (原文中的证据句)",
+        "confidence": "number (0.0-1.0, 基于证据明确程度)",
+        "evidence_level": "string (可选: A/B/C/D, 仅indication类型需要)",
+        "is_first_line": "boolean (可选: 是否为一线用药, 仅indication类型)",
+        "mechanism": "string (可选: 相互作用机制, 仅drug_interaction类型)",
+        "severity": "string (可选: 轻度/中度/重度)"
+      }
+    ]
+  }
+
+user: |
+  已知实体: {entities}
+  原文: {text}
+
+  请严格按照Schema输出JSON（不要输出任何额外文字）：

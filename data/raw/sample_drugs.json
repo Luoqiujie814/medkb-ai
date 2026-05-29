@@ -1,0 +1,132 @@
+[
+  {
+    "name": "阿司匹林",
+    "generic_name": "Aspirin",
+    "brand_names": "拜阿司匹林, 巴米尔",
+    "category": "解热镇痛抗炎药",
+    "dosage_form": "片剂",
+    "manufacturer": "拜耳医药",
+    "atc_code": "N02BA01",
+    "description": "阿司匹林是一种经典的非甾体抗炎药(NSAID)，具有解热、镇痛、抗炎和抗血小板聚集作用。小剂量用于预防心脑血管血栓事件。",
+    "indications": [
+      {"disease": "发热", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.3-0.6g/次"},
+      {"disease": "轻度疼痛", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.3-0.6g/次"},
+      {"disease": "冠心病", "evidence_level": "A", "is_first_line": true, "usage": "口服 75-100mg/日"},
+      {"disease": "缺血性脑卒中", "evidence_level": "A", "is_first_line": true, "usage": "口服 75-100mg/日"}
+    ],
+    "adverse_effects": [
+      {"effect_name": "胃肠道不适", "frequency": "常见", "severity": "轻度", "body_system": "消化系统"},
+      {"effect_name": "消化道出血", "frequency": "少见", "severity": "重度", "body_system": "消化系统"},
+      {"effect_name": "过敏反应", "frequency": "少见", "severity": "中度", "body_system": "免疫系统"},
+      {"effect_name": "耳鸣", "frequency": "少见", "severity": "轻度", "body_system": "神经系统"}
+    ],
+    "interactions": [
+      {"drug_b": "布洛芬", "type": "药效拮抗", "mechanism": "竞争COX酶结合位点", "severity": "中度"},
+      {"drug_b": "华法林", "type": "增加出血风险", "mechanism": "协同抗血小板+抗凝作用", "severity": "重度"},
+      {"drug_b": "甲氨蝶呤", "type": "增加毒性", "mechanism": "减少甲氨蝶呤肾清除", "severity": "重度"}
+    ],
+    "source": "NMPA药品说明书"
+  },
+  {
+    "name": "布洛芬",
+    "generic_name": "Ibuprofen",
+    "brand_names": "芬必得, 美林",
+    "category": "解热镇痛抗炎药",
+    "dosage_form": "片剂/胶囊/混悬液",
+    "manufacturer": "中美史克",
+    "atc_code": "M01AE01",
+    "description": "布洛芬为丙酸类非甾体抗炎药，通过抑制环氧化酶(COX)减少前列腺素合成，发挥解热、镇痛和抗炎作用。",
+    "indications": [
+      {"disease": "发热", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.2-0.4g/次"},
+      {"disease": "轻度疼痛", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.2-0.4g/次"},
+      {"disease": "类风湿关节炎", "evidence_level": "A", "is_first_line": false, "usage": "口服 0.4-0.8g/次，tid"},
+      {"disease": "骨关节炎", "evidence_level": "A", "is_first_line": false, "usage": "口服 0.4g/次，tid"}
+    ],
+    "adverse_effects": [
+      {"effect_name": "胃肠道不适", "frequency": "常见", "severity": "轻度", "body_system": "消化系统"},
+      {"effect_name": "肾功能损害", "frequency": "少见", "severity": "重度", "body_system": "泌尿系统"},
+      {"effect_name": "头痛", "frequency": "常见", "severity": "轻度", "body_system": "神经系统"},
+      {"effect_name": "皮疹", "frequency": "少见", "severity": "轻度", "body_system": "皮肤系统"}
+    ],
+    "interactions": [
+      {"drug_b": "阿司匹林", "type": "药效拮抗", "mechanism": "竞争COX酶结合位点", "severity": "中度"},
+      {"drug_b": "华法林", "type": "增加出血风险", "mechanism": "蛋白结合位点置换", "severity": "中度"},
+      {"drug_b": "ACEI类降压药", "type": "降低降压效果", "mechanism": "抑制前列腺素介导的血管扩张", "severity": "中度"}
+    ],
+    "source": "NMPA药品说明书"
+  },
+  {
+    "name": "对乙酰氨基酚",
+    "generic_name": "Paracetamol/Acetaminophen",
+    "brand_names": "泰诺, 扑热息痛, 百服宁",
+    "category": "解热镇痛药",
+    "dosage_form": "片剂/混悬液/栓剂",
+    "manufacturer": "强生",
+    "atc_code": "N02BE01",
+    "description": "对乙酰氨基酚为苯胺类解热镇痛药，通过抑制中枢神经系统前列腺素合成发挥解热镇痛作用，抗炎作用较弱。",
+    "indications": [
+      {"disease": "发热", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.3-0.5g/次"},
+      {"disease": "轻度疼痛", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.3-0.5g/次"},
+      {"disease": "偏头痛", "evidence_level": "B", "is_first_line": false, "usage": "口服 0.5-1g/次"}
+    ],
+    "adverse_effects": [
+      {"effect_name": "肝毒性", "frequency": "罕见", "severity": "重度", "body_system": "消化系统"},
+      {"effect_name": "皮疹", "frequency": "少见", "severity": "轻度", "body_system": "皮肤系统"}
+    ],
+    "interactions": [
+      {"drug_b": "酒精", "type": "增加肝毒性风险", "mechanism": "协同消耗谷胱甘肽", "severity": "重度"},
+      {"drug_b": "华法林", "type": "增加INR", "mechanism": "抑制维生素K代谢", "severity": "轻度"}
+    ],
+    "source": "NMPA药品说明书"
+  },
+  {
+    "name": "奥美拉唑",
+    "generic_name": "Omeprazole",
+    "brand_names": "洛赛克, 奥西康",
+    "category": "质子泵抑制剂",
+    "dosage_form": "胶囊/片剂/注射剂",
+    "manufacturer": "阿斯利康",
+    "atc_code": "A02BC01",
+    "description": "奥美拉唑为质子泵抑制剂(PPI)，特异性抑制胃壁细胞H+/K+-ATP酶，强效抑制胃酸分泌。",
+    "indications": [
+      {"disease": "胃食管反流病", "evidence_level": "A", "is_first_line": true, "usage": "口服 20-40mg/日"},
+      {"disease": "消化性溃疡", "evidence_level": "A", "is_first_line": true, "usage": "口服 20mg/日"},
+      {"disease": "幽门螺杆菌感染", "evidence_level": "A", "is_first_line": true, "usage": "联合抗生素方案，20mg bid"}
+    ],
+    "adverse_effects": [
+      {"effect_name": "头痛", "frequency": "常见", "severity": "轻度", "body_system": "神经系统"},
+      {"effect_name": "腹泻", "frequency": "常见", "severity": "轻度", "body_system": "消化系统"},
+      {"effect_name": "维生素B12缺乏", "frequency": "少见", "severity": "中度", "body_system": "血液系统"},
+      {"effect_name": "骨折风险增加", "frequency": "少见", "severity": "重度", "body_system": "骨骼系统"}
+    ],
+    "interactions": [
+      {"drug_b": "氯吡格雷", "type": "降低药效", "mechanism": "竞争CYP2C19代谢", "severity": "中度"},
+      {"drug_b": "酮康唑", "type": "降低吸收", "mechanism": "胃酸减少影响溶解", "severity": "中度"}
+    ],
+    "source": "NMPA药品说明书"
+  },
+  {
+    "name": "二甲双胍",
+    "generic_name": "Metformin",
+    "brand_names": "格华止, 美迪康",
+    "category": "口服降糖药",
+    "dosage_form": "片剂",
+    "manufacturer": "默克",
+    "atc_code": "A10BA02",
+    "description": "二甲双胍为双胍类口服降糖药，通过减少肝糖输出、增加外周组织对葡萄糖的摄取和利用来降低血糖，是2型糖尿病的一线用药。",
+    "indications": [
+      {"disease": "2型糖尿病", "evidence_level": "A", "is_first_line": true, "usage": "口服 0.5g bid，可增至1g bid"},
+      {"disease": "多囊卵巢综合征", "evidence_level": "B", "is_first_line": false, "usage": "口服 0.5g tid"}
+    ],
+    "adverse_effects": [
+      {"effect_name": "胃肠道反应", "frequency": "常见", "severity": "轻度", "body_system": "消化系统"},
+      {"effect_name": "乳酸性酸中毒", "frequency": "罕见", "severity": "重度", "body_system": "代谢系统"},
+      {"effect_name": "维生素B12缺乏", "frequency": "少见", "severity": "中度", "body_system": "血液系统"}
+    ],
+    "interactions": [
+      {"drug_b": "碘造影剂", "type": "增加乳酸性酸中毒风险", "mechanism": "肾排泄竞争", "severity": "重度"},
+      {"drug_b": "酒精", "type": "增加低血糖风险", "mechanism": "抑制糖异生", "severity": "中度"}
+    ],
+    "source": "NMPA药品说明书"
+  }
+]
